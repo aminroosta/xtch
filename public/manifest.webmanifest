@@ -1,7 +1,7 @@
 {
   "id": "./",
-  "name": "Paperform — EPUB to XTCH",
-  "short_name": "Paperform",
+  "name": "EPUB to XTCH",
+  "short_name": "EPUB to XTCH",
   "description": "Convert EPUB books to XTCH locally for the Xteink X4 Classic.",
   "start_url": "./",
   "scope": "./",

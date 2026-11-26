@@ -1,5 +1,5 @@
 const $ = id => document.getElementById(id);
-const defaults = {font: 'serif', size: 30, line: 115, margin: 18, hyphen: true, dither: false};
+const defaults = {font: 'serif', size: 30, line: 115, margin: 12, hyphen: true, dither: false};
 const keys = Object.keys(defaults);
 const form = $('layout');
 const canvas = $('page');

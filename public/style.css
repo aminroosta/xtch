@@ -10,11 +10,7 @@ button,input,select { font:inherit; color:inherit }
 button { cursor:pointer }
 button:disabled, select:disabled { cursor:default; opacity:.55 }
 :focus-visible { outline:2px solid var(--focus); outline-offset:3px }
-.top { border-bottom:1px solid var(--line); background:var(--paper) }
-.top-inner,.wrap { max-width:1160px; margin:auto; padding-inline:clamp(16px,4vw,42px) }
-.top-inner { display:flex; align-items:center; gap:16px; min-height:60px }
-.brand { display:flex; align-items:center; gap:9px; text-decoration:none; font-weight:760; color:var(--ink); letter-spacing:-.025em; margin-right:auto }
-.private { display:flex; align-items:center; gap:6px; color:var(--sub); font-size:.81rem }
+.wrap { max-width:1160px; margin:auto; padding-inline:clamp(16px,4vw,42px) }
 .intro { padding:31px 0 24px }
 .intro p { color:var(--sub); margin-top:11px }
 .workspace { display:grid; grid-template-columns:minmax(274px,326px) minmax(0,1fr); grid-template-rows:auto auto 1fr; grid-template-areas:"book preview" "layout preview" "export preview"; gap:12px 18px; align-items:start }
@@ -68,7 +64,9 @@ canvas { display:block; width:100%; height:auto }
 .arrow:hover:not(:disabled) { background:#eef1f6 }
 .status:not(:empty),.error { padding:0 16px 11px; text-align:center; font-size:.85rem; color:var(--sub) }
 .error { color:#a12920 }
-footer { display:flex; justify-content:space-between; gap:10px; color:var(--sub); margin:15px 0 22px; font-size:.78rem }
+footer { display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:6px 12px; color:var(--sub); margin:15px 0 22px; font-size:.78rem }
+.footer-actions { display:flex; align-items:baseline; gap:12px }
+.footer-actions .quiet { font-size:inherit }
 .sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap }
 @media(max-width:720px) {
   .workspace { grid-template-columns:minmax(0,1fr); grid-template-rows:auto; grid-template-areas:"book" "preview" "layout" "export" }
@@ -78,9 +76,6 @@ footer { display:flex; justify-content:space-between; gap:10px; color:var(--sub)
   .book-card,.layout-card,.export-card { padding:12px 14px }
 }
 @media (max-width:420px) {
-  .top-inner { gap:7px }
-  .top-inner:has(.install:not([hidden])) .private { display:none }
   #chapters { max-width:58% }
   #font,.nav input { font-size:16px }
-  footer { flex-wrap:wrap }
 }

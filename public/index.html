@@ -6,7 +6,7 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="theme-color" content="#f5f3ee">
   <meta name="description" content="Preview EPUBs and convert them to XTCH for the Xteink X4 Classic. Your books stay on your device.">
-  <title>Paperform — EPUB to XTCH</title>
+  <title>EPUB to XTCH</title>
   <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./icons/icon-192.png">
   <link rel="manifest" href="./manifest.webmanifest">
@@ -14,16 +14,6 @@
   <script src="./app.js" type="module"></script>
 </head>
 <body>
-  <header class="top">
-    <div class="top-inner">
-      <a class="brand" href="./"><img src="./icons/icon.svg" width="32" height="32" alt="">Paperform</a>
-      <button class="quiet install" id="install" type="button" hidden>Install app</button>
-      <span class="private">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 20 20" aria-hidden="true"><rect x="4.5" y="8" width="11" height="9" rx="2"/><path d="M7 8V5a3 3 0 0 1 6 0v3"/></svg>
-        Files stay on this device
-      </span>
-    </div>
-  </header>
   <main class="wrap">
     <div class="intro">
       <h1>EPUB to XTCH</h1>
@@ -77,16 +67,25 @@
         <fieldset id="layout" aria-label="Layout controls">
           <label class="face" for="font">Typeface</label>
           <select id="font">
-            <option value="serif">STIX Two Text · Serif</option>
-            <option value="sans">Liberation Sans · Sans serif</option>
-            <option value="mono">Liberation Mono · Monospace</option>
+            <optgroup label="Serif">
+              <option value="serif">STIX Two Text</option>
+              <option value="lora">Lora</option>
+              <option value="garamond">EB Garamond</option>
+            </optgroup>
+            <optgroup label="Sans serif">
+              <option value="atkinson">Atkinson Hyperlegible</option>
+              <option value="sans">Liberation Sans</option>
+            </optgroup>
+            <optgroup label="Monospace">
+              <option value="mono">Liberation Mono</option>
+            </optgroup>
           </select>
           <label class="slider-label" for="size">Font size <output id="size-val" for="size"></output></label>
           <input id="size" type="range" min="20" max="46" step="2" value="30">
           <label class="slider-label" for="line">Line spacing <output id="line-val" for="line"></output></label>
           <input id="line" type="range" min="100" max="160" step="5" value="115">
           <label class="slider-label" for="margin">Page margins <output id="margin-val" for="margin"></output></label>
-          <input id="margin" type="range" min="8" max="36" step="2" value="18">
+          <input id="margin" type="range" min="4" max="36" step="2" value="12">
           <div class="toggles">
             <label><input id="hyphen" type="checkbox" checked> Hyphenate words</label>
             <label><input id="dither" type="checkbox"> Dither grayscale</label>
@@ -104,7 +103,13 @@
         <a class="primary" id="download" hidden>Download XTCH</a>
       </section>
     </div>
-    <footer><span>XTCH uses fixed pages. Set your font and size before exporting.</span><a href="./licenses">Credits &amp; licenses</a></footer>
+    <footer>
+      <span>XTCH uses fixed pages. Set your font and size before exporting.</span>
+      <div class="footer-actions">
+        <button class="quiet" id="install" type="button" hidden>Install app</button>
+        <a href="./licenses">Credits &amp; licenses</a>
+      </div>
+    </footer>
   </main>
 </body>
 </html>

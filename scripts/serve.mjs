@@ -25,4 +25,4 @@ createServer(async (req, res) => {
   } catch {
     res.writeHead(404).end('Not found');
   }
-}).listen(port, process.env.HOST || '127.0.0.1', () => console.log('Paperform at http://localhost:' + port));
+}).listen(port, process.env.HOST || '127.0.0.1', () => console.log('EPUB to XTCH at http://localhost:' + port));

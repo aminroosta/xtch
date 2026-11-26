@@ -16,6 +16,9 @@ a3a0e214abc7987d56a0954bddda50421d12c17f12b7a490a4d83753c25476a8  crengine.js
 
 - [STIX Two Text and STIX Two Math](https://github.com/stipub/stixfonts) — [SIL Open Font License](public/fonts/STIX-OFL.txt)
 - [Liberation Sans and Liberation Mono](https://github.com/liberation-fonts/liberation-fonts) — [SIL Open Font License](public/fonts/LIBERATION-OFL.txt)
+- [Atkinson Hyperlegible](https://github.com/google/fonts/tree/5e5a3e04a1af8effa6e5708e4e963a49faff93ab/ofl/atkinsonhyperlegible) — [SIL Open Font License](public/fonts/ATKINSON-OFL.txt)
+- [EB Garamond](https://github.com/octaviopardo/EBGaramond12/tree/6d9aff51f8d0f02b21846e2f4db015c75c24a55c/fonts/otf) — [SIL Open Font License](public/fonts/EBGARAMOND-OFL.txt)
+- [Lora](https://github.com/cyrealtype/Lora-Cyrillic/tree/990d096770ec849579270d3031e1b84ea32e1272/fonts/otf) — [SIL Open Font License](public/fonts/LORA-OFL.txt)
 
 ## Format reference
 

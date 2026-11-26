@@ -3,7 +3,10 @@ importScripts('./vendor/crengine.js', './xtch.js');
 const families = {
   serif: ['STIX Two Text', 'STIXTwoText', 'otf'],
   sans: ['Liberation Sans', 'LiberationSans', 'ttf'],
-  mono: ['Liberation Mono', 'LiberationMono', 'ttf']
+  mono: ['Liberation Mono', 'LiberationMono', 'ttf'],
+  lora: ['Lora', 'Lora', 'otf'],
+  garamond: ['EB Garamond', 'EBGaramond', 'otf'],
+  atkinson: ['Atkinson Hyperlegible', 'AtkinsonHyperlegible', 'ttf']
 };
 const styles = ['Regular', 'Italic', 'Bold', 'BoldItalic'];
 let modulePromise, renderer, book, settings, exportTask;
@@ -105,9 +108,10 @@ function setLayout(next) {
   const font = families[next.font][0];
   renderer.setFontFace(font);
   renderer.setFontSize(next.size);
-  renderer.setInterlineSpace(next.line);
   renderer.setMargins(next.margin, next.margin, next.margin, next.margin);
   renderer.setHyphenation(next.hyphen ? 2 : 0);
+  // The property setters above reapply the engine's default line spacing.
+  renderer.setInterlineSpace(next.line);
   settings = next;
 
   // Changes may defer pagination until the next draw.
