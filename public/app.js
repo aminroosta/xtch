@@ -1,5 +1,9 @@
 const $ = id => document.getElementById(id);
-const defaults = {font: 'serif', size: 30, line: 115, margin: 12, hyphen: true, dither: false};
+const defaults = {
+  font: 'serif', size: 30, line: 115, margin: 12,
+  align: 'book', justification: 100, wordSpacing: 100,
+  hyphen: true, dither: false
+};
 const keys = Object.keys(defaults);
 const form = $('layout');
 const canvas = $('page');
@@ -15,7 +19,9 @@ function setSettings(values) {
     if (element.type === 'checkbox') element.checked = values[key];
     else element.value = values[key];
   }
-  if (!$('font').value) $('font').value = defaults.font;
+  for (const key of ['font', 'align']) {
+    if (!$(key).value) $(key).value = defaults[key];
+  }
   showValues();
 }
 
@@ -30,6 +36,9 @@ function showValues() {
   $('size-val').value = $('size').value + ' px';
   $('line-val').value = $('line').value + '%';
   $('margin-val').value = $('margin').value + ' px';
+  $('word-spacing-val').value = $('wordSpacing').value + '%';
+  $('justification-val').value = $('justification').value + '%';
+  $('justify-control').hidden = $('align').value !== 'justify';
 }
 
 try {

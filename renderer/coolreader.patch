@@ -1,0 +1,156 @@
+diff --git a/crengine/include/lvdocview.h b/crengine/include/lvdocview.h
+index 5e8a734..3f82fcb 100644
+--- a/crengine/include/lvdocview.h
++++ b/crengine/include/lvdocview.h
+@@ -879,6 +879,7 @@ public:
+ 
+     /// set document stylesheet text
+     void setStyleSheet( lString8 css_text );
++    const lString8 & getStyleSheet() const { return m_stylesheet; }
+ 
+     /// set default interline space, percent (100..200)
+     void setDefaultInterlineSpace( int percent );
+diff --git a/crengine/include/lvtinydom.h b/crengine/include/lvtinydom.h
+index eeb7e89..0a20a18 100644
+--- a/crengine/include/lvtinydom.h
++++ b/crengine/include/lvtinydom.h
+@@ -462,6 +462,7 @@ protected:
+ 
+     img_scaling_options_t _imgScalingOptions;
+     int  _spaceWidthScalePercent;
++    int  _justificationExtraSpacePercent = 0; // 0 means no cap
+     int  _minSpaceCondensingPercent;
+     int  _unusedSpaceThresholdPercent;
+     int  _maxAddedLetterSpacingPercent;
+@@ -532,6 +533,13 @@ protected:
+ public:
+ 
+ #if BUILD_LITE!=1
++    bool setJustificationExtraSpacePercent(int percent) {
++        if (percent == _justificationExtraSpacePercent)
++            return false;
++        _justificationExtraSpacePercent = percent;
++        return true;
++    }
++
+     int getSpaceWidthScalePercent() {
+         return _spaceWidthScalePercent;
+     }
+diff --git a/crengine/src/lvtinydom.cpp b/crengine/src/lvtinydom.cpp
+index 3094645..d87c6e9 100644
+--- a/crengine/src/lvtinydom.cpp
++++ b/crengine/src/lvtinydom.cpp
+@@ -4127,6 +4127,7 @@ LFormattedText * lxmlDocBase::createFormattedText()
+     LFormattedText * p = new LFormattedText();
+     p->setImageScalingOptions(&_imgScalingOptions);
+     p->setSpaceWidthScalePercent(_spaceWidthScalePercent);
++    p->setJustificationExtraSpacePercent(_justificationExtraSpacePercent);
+     p->setMinSpaceCondensingPercent(_minSpaceCondensingPercent);
+     p->setUnusedSpaceThresholdPercent(_unusedSpaceThresholdPercent);
+     p->setMaxAddedLetterSpacingPercent(_maxAddedLetterSpacingPercent);
+@@ -15674,6 +15675,7 @@ lUInt32 tinyNodeCollection::calcStyleHash(bool already_rendered)
+     CRLog::info("Calculating style hash...  elemCount=%d, globalHash=%08x, docFlags=%08x, nodeStyleHash=%08x", _elemCount, globalHash, docFlags, res);
+     res = res * 31 + _imgScalingOptions.getHash();
+     res = res * 31 + _spaceWidthScalePercent;
++    res = res * 31 + _justificationExtraSpacePercent;
+     res = res * 31 + _minSpaceCondensingPercent;
+     res = res * 31 + _unusedSpaceThresholdPercent;
+ 
+diff --git a/crengine/include/lvtextfm.h b/crengine/include/lvtextfm.h
+index 9b25cdb..761faab 100644
+--- a/crengine/include/lvtextfm.h
++++ b/crengine/include/lvtextfm.h
+@@ -183,7 +183,7 @@ typedef struct
+ #define LTEXT_WORD_IS_LINK_START             0x0010 /// first word of link flag
+ #define LTEXT_WORD_IS_OBJECT                 0x0020 /// word is an image
+ #define LTEXT_WORD_IS_INLINE_BOX             0x0040 /// word is a inline-block or inline-table wrapping box
+-#define LTEXT_WORD__AVAILABLE_BIT_08__       0x0080
++#define LTEXT_WORD_HAS_EXPANDABLE_SPACE      0x0080 /// word has a measured inter-word space
+ 
+ #define LTEXT_WORD_DIRECTION_KNOWN           0x0100 /// word has been thru bidi: if next flag is unset, it is LTR.
+ #define LTEXT_WORD_DIRECTION_IS_RTL          0x0200 /// word is RTL
+@@ -299,6 +299,7 @@ typedef struct
+    lInt32                img_zoom_out_scale_inline; /**< max scale for inline images zoom out: 1, 2, 3 */
+ 
+    // Space width
++   lInt32                justification_extra_space_percent; /**< cap added justification space relative to the natural word gap; 0 disables */
+    lInt32                space_width_scale_percent; /**< scale the normal width of all spaces in all fonts by this percent */
+    lInt32                min_space_condensing_percent; /**< min size of space (relative to scaled size) to allow fitting line by reducing of spaces */
+    // For word spacing and justitication
+@@ -403,6 +404,7 @@ public:
+     /// set space glyph width scaling percent option (10..500%)
+     // (scale the normal width of all spaces in all fonts by this percent)
+     void setSpaceWidthScalePercent(int spaceWidthScalePercent);
++    void setJustificationExtraSpacePercent(int percent);
+ 
+     /// set space condensing line fitting option (25..100%)
+     // (applies after spaceWidthScalePercent has been applied)
+diff --git a/crengine/src/lvtextfm.cpp b/crengine/src/lvtextfm.cpp
+index a6613ac..6d5e947 100644
+--- a/crengine/src/lvtextfm.cpp
++++ b/crengine/src/lvtextfm.cpp
+@@ -192,6 +192,7 @@ formatted_text_fragment_t * lvtextAllocFormatter( lUInt16 width )
+     pbuffer->img_zoom_out_scale_block = defMult; /**< max scale for block images zoom out: 1, 2, 3 */
+     pbuffer->img_zoom_out_mode_inline = defMode; /**< can zoom out inline images: 0=disabled, 1=integer scale, 2=free scale */
+     pbuffer->img_zoom_out_scale_inline = defMult; /**< max scale for inline images zoom out: 1, 2, 3 */
++    pbuffer->justification_extra_space_percent = 0;
+     pbuffer->space_width_scale_percent = SPACE_WIDTH_SCALE_PERCENT; // 100% (keep original width)
+     pbuffer->min_space_condensing_percent = MIN_SPACE_CONDENSING_PERCENT; // 50%
+     pbuffer->unused_space_threshold_percent = UNUSED_SPACE_THRESHOLD_PERCENT; // 5%
+@@ -2370,12 +2371,34 @@ public:
+                 // distribute additional space
+                 int extraSpace = extra_width;
+                 int addSpacePoints = 0;
++                int normalSpaceWidth = 0;
++                int measuredSpaces = 0;
+                 int i;
+                 for ( i=0; i<(int)frmline->word_count-1; i++ ) {
+-                    if ( frmline->words[i].flags & LTEXT_WORD_CAN_ADD_SPACE_AFTER )
++                    const formatted_word_t & word = frmline->words[i];
++                    if ( word.flags & LTEXT_WORD_CAN_ADD_SPACE_AFTER )
+                         addSpacePoints++;
++                    if ( m_pbuffer->justification_extra_space_percent > 0 &&
++                         word.flags & LTEXT_WORD_HAS_EXPANDABLE_SPACE ) {
++                        const src_text_fragment_t & src = m_pbuffer->srctext[word.src_text_index];
++                        if ( src.t.font ) {
++                            const int naturalWidth = ((LVFont *)src.t.font)->getCharWidth(U' ');
++                            normalSpaceWidth += naturalWidth * m_pbuffer->space_width_scale_percent / 100;
++                            measuredSpaces++;
++                        }
++                    }
+                 }
+                 if ( addSpacePoints>0 ) {
++                    // Respect the cap only for lines justified by ordinary word spaces.
++                    // Leave justification between ideographs and other non-space scripts unchanged.
++                    if ( measuredSpaces == addSpacePoints && normalSpaceWidth > 0 ) {
++                        const int cap = normalSpaceWidth * m_pbuffer->justification_extra_space_percent / 100;
++                        if ( extraSpace > cap ) {
++                            if ( m_para_dir_is_rtl )
++                                frmline->x += extraSpace - cap;
++                            extraSpace = cap;
++                        }
++                    }
+                     int addSpaceDiv = extraSpace / addSpacePoints;
+                     int addSpaceMod = extraSpace % addSpacePoints;
+                     int delta = 0;
+@@ -3397,7 +3420,7 @@ public:
+                         // to have it work also with BiDi/RTL text (checking that here
+                         // would be too late, as reordering has been done).
+                         if ( !(m_flags[i-1] & LCHAR_LOCKED_SPACING) ) {
+-                            word->flags |= LTEXT_WORD_CAN_ADD_SPACE_AFTER;
++                            word->flags |= LTEXT_WORD_CAN_ADD_SPACE_AFTER | LTEXT_WORD_HAS_EXPANDABLE_SPACE;
+                             int dw = getMaxCondensedSpaceTruncation(i-1);
+                             if (dw>0) {
+                                 word->min_width = word->width - dw;
+@@ -4662,6 +4685,11 @@ void LFormattedText::setImageScalingOptions( img_scaling_options_t * options )
+     m_pbuffer->img_zoom_out_scale_inline = options->zoom_out_inline.max_scale;
+ }
+ 
++void LFormattedText::setJustificationExtraSpacePercent(int percent)
++{
++    m_pbuffer->justification_extra_space_percent = percent;
++}
++
+ void LFormattedText::setSpaceWidthScalePercent(int spaceWidthScalePercent)
+ {
+     if (spaceWidthScalePercent>=10 && spaceWidthScalePercent<=500)

@@ -1,0 +1,74 @@
+diff --git a/EpubRenderer.cpp b/EpubRenderer.cpp
+index 98b56e6..6ab8d3a 100644
+--- a/EpubRenderer.cpp
++++ b/EpubRenderer.cpp
+@@ -8,6 +8,7 @@
+ #include <emscripten/bind.h>
+ #include <emscripten/emscripten.h>
+ #include <emscripten/val.h>
++#include <algorithm>
+ #include <cstdint>
+ #include <cstdio>
+ #include <cstdlib>
+@@ -84,6 +85,7 @@ public:
+             InitFontManager(lString8(""));
+         }
+         m_view.reset(new LVDocView());
++        m_baseStyle = m_view->getStyleSheet();
+         m_buf.reset(new LVColorDrawBuf(w, h, 32));
+         m_view->Resize(w, h);
+         applyDefaultProps();
+@@ -195,9 +197,33 @@ public:
+         m_view->propsApply(p);
+     }
+ 
+-    void setTextAlign(int /*mode*/) {
+-        // CoolReader's text alignment is a CSS document-level setting.
+-        // No direct LVDocView setter; left as no-op for now.
++    void setTextAlign(int mode) {
++        const char * align[] = {"left", "right", "center", "justify"};
++        setTypography(mode >= 0 && mode < 4 ? align[mode] : "book", 100, 100);
++    }
++
++    void setTypography(std::string align, int justification, int wordSpacing) {
++        if (align != "left" && align != "center" && align != "right" && align != "justify")
++            align = "book";
++        if (align != m_align) {
++            lString8 css(m_baseStyle);
++            if (align != "book") {
++                // User rules override publisher paragraph styles without targeting headings.
++                css += "\nbody, p { text-align: ";
++                css += align.c_str();
++                css += " !important; text-align-last: auto !important; }\n";
++            }
++            m_view->setStyleSheet(css);
++            m_align = align;
++        }
++        auto * doc = m_view->getDocument();
++        if (doc) {
++            const int cap = align == "justify" ? std::max(70, std::min(150, justification)) : 0;
++            const bool gapChanged = doc->setJustificationExtraSpacePercent(cap);
++            const bool widthChanged = doc->setSpaceWidthScalePercent(std::max(70, std::min(150, wordSpacing)));
++            if (gapChanged || widthChanged)
++                m_view->requestRender();
++        }
+     }
+ 
+     void setHyphenation(int mode) {
+@@ -322,6 +348,8 @@ public:
+ 
+ private:
+     int m_w, m_h;
++    lString8 m_baseStyle;
++    std::string m_align = "book";
+     std::unique_ptr<LVDocView> m_view;
+     std::unique_ptr<LVColorDrawBuf> m_buf;
+ };
+@@ -343,6 +371,7 @@ EMSCRIPTEN_BINDINGS(crengine_module) {
+         .function("setInterlineSpace",      &EpubRenderer::setInterlineSpace)
+         .function("setFontFace",            &EpubRenderer::setFontFace)
+         .function("setTextAlign",           &EpubRenderer::setTextAlign)
++        .function("setTypography",          &EpubRenderer::setTypography)
+         .function("setHyphenation",         &EpubRenderer::setHyphenation)
+         .function("setHyphenationLanguage", &EpubRenderer::setHyphenationLanguage)
+         .function("resize",                 &EpubRenderer::resize)

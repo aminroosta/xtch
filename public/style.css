@@ -31,10 +31,11 @@ button:disabled, select:disabled { cursor:default; opacity:.55 }
 .book-detail span { color:var(--sub); font-size:.85rem }
 fieldset { border:0; padding:0; margin:0; min-width:0 }
 fieldset:disabled { opacity:.68 }
-.face,.slider-label { font-size:.88rem; font-weight:610 }
-.face { display:block; margin:10px 0 4px }
+.setting-label,.slider-label { font-size:.88rem; font-weight:610 }
+.setting-label { display:block; margin:10px 0 4px }
+.setting-hint { font-size:.78rem; color:var(--sub) }
 select,input[type="number"] { border:1px solid var(--line); border-radius:7px; background:var(--paper); min-height:40px; padding:7px 8px }
-#font { width:100% }
+fieldset select { width:100% }
 .slider-label { display:flex; justify-content:space-between; align-items:center; margin-top:12px }
 .slider-label output { color:var(--accent); font-variant-numeric:tabular-nums; font-size:.79rem }
 input[type="range"] { display:block; width:100%; margin:4px 0 0; height:25px; accent-color:var(--accent); cursor:pointer }
@@ -77,5 +78,5 @@ footer { display:flex; align-items:baseline; justify-content:space-between; flex
 }
 @media (max-width:420px) {
   #chapters { max-width:58% }
-  #font,.nav input { font-size:16px }
+  fieldset select,.nav input { font-size:16px }
 }

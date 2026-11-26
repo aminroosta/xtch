@@ -110,6 +110,7 @@ function setLayout(next) {
   renderer.setFontSize(next.size);
   renderer.setMargins(next.margin, next.margin, next.margin, next.margin);
   renderer.setHyphenation(next.hyphen ? 2 : 0);
+  renderer.setTypography(next.align, next.justification, next.wordSpacing);
   // The property setters above reapply the engine's default line spacing.
   renderer.setInterlineSpace(next.line);
   settings = next;

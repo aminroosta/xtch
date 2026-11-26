@@ -2,14 +2,16 @@
 
 ## EPUB renderer
 
-`public/vendor/crengine.js` and `public/vendor/crengine.wasm` are the unmodified `wasm-build/out/` artifacts from [epub-to-xtc-converter at `a5719c6`](https://github.com/bigbag/epub-to-xtc-converter/tree/a5719c6d4f64c52675b55889b18dae9877a9e9d6). The same revision contains the [wrapper source, patches, and build instructions](https://github.com/bigbag/epub-to-xtc-converter/tree/a5719c6d4f64c52675b55889b18dae9877a9e9d6/wasm-build). It builds against [CoolReader at `064723e`](https://github.com/buggins/coolreader/tree/064723eace938389fb99f84518ce773ede38dbdf).
+`public/vendor/crengine.js` and `public/vendor/crengine.wasm` are built from [CoolReader at `064723e`](https://github.com/buggins/coolreader/tree/064723eace938389fb99f84518ce773ede38dbdf) using the [epub-to-xtc-converter wrapper and build recipe at `a5719c6`](https://github.com/bigbag/epub-to-xtc-converter/tree/a5719c6d4f64c52675b55889b18dae9877a9e9d6/wasm-build), plus our [alignment and word-spacing patches](renderer/).
+
+Run `renderer/rebuild.sh` with Podman (or `CONTAINER_ENGINE=docker renderer/rebuild.sh`) to rebuild the renderer with Emscripten 6.0.9. The regular site build uses the checked-in artifacts.
 
 - [CoolReader license](public/vendor/COOLREADER-LICENSE.txt)
 - [WASM wrapper repository license](public/vendor/WRAPPER-LICENSE.txt)
 
 ```text
 a3a0e214abc7987d56a0954bddda50421d12c17f12b7a490a4d83753c25476a8  crengine.js
-266f0bbf960843bfcb541160104877d688271f33a9ffc6e7be9bfe485e6d357c  crengine.wasm
+598a215d6ba639abc3b79e75c203f657ed784fa9f57dc9282caa27082a51ce27  crengine.wasm
 ```
 
 ## Fonts

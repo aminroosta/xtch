@@ -65,7 +65,7 @@
       <section class="card layout-card">
         <div class="card-head"><h2>Layout</h2><button id="reset" type="button" class="quiet">Reset</button></div>
         <fieldset id="layout" aria-label="Layout controls">
-          <label class="face" for="font">Typeface</label>
+          <label class="setting-label" for="font">Typeface</label>
           <select id="font">
             <optgroup label="Serif">
               <option value="serif">STIX Two Text</option>
@@ -86,6 +86,21 @@
           <input id="line" type="range" min="100" max="160" step="5" value="115">
           <label class="slider-label" for="margin">Page margins <output id="margin-val" for="margin"></output></label>
           <input id="margin" type="range" min="4" max="36" step="2" value="12">
+          <label class="setting-label" for="align">Text alignment</label>
+          <select id="align">
+            <option value="book">Book default</option>
+            <option value="left">Left</option>
+            <option value="justify">Justified</option>
+            <option value="center">Centered</option>
+            <option value="right">Right</option>
+          </select>
+          <div id="justify-control" hidden>
+            <label class="slider-label" for="justification">Justification <output id="justification-val" for="justification"></output></label>
+            <input id="justification" type="range" min="70" max="150" step="5" value="100" aria-describedby="justification-help">
+            <p class="setting-hint" id="justification-help">Limits the extra space between words on justified lines.</p>
+          </div>
+          <label class="slider-label" for="wordSpacing">Word spacing <output id="word-spacing-val" for="wordSpacing"></output></label>
+          <input id="wordSpacing" type="range" min="70" max="150" step="5" value="100">
           <div class="toggles">
             <label><input id="hyphen" type="checkbox" checked> Hyphenate words</label>
             <label><input id="dither" type="checkbox"> Dither grayscale</label>
