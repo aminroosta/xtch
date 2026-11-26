@@ -258,7 +258,12 @@ window.addEventListener('drop', event => {
   $('pick').classList.remove('drag');
   if ($('pick').contains(event.target)) openFile(event.dataTransfer.files[0]);
 });
-form.addEventListener('input', settingsChanged);
+form.addEventListener('input', event => {
+  if (event.target.tagName !== 'SELECT') settingsChanged();
+});
+form.addEventListener('change', event => {
+  if (event.target.tagName === 'SELECT') settingsChanged();
+});
 $('reset').addEventListener('click', () => { setSettings(defaults); settingsChanged(); });
 $('prev').addEventListener('click', () => goTo(pendingPage - 1));
 $('next').addEventListener('click', () => goTo(pendingPage + 1));

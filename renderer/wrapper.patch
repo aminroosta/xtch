@@ -1,5 +1,5 @@
 diff --git a/EpubRenderer.cpp b/EpubRenderer.cpp
-index 98b56e6..6ab8d3a 100644
+index 98b56e6..58f7b38 100644
 --- a/EpubRenderer.cpp
 +++ b/EpubRenderer.cpp
 @@ -8,6 +8,7 @@
@@ -36,8 +36,8 @@ index 98b56e6..6ab8d3a 100644
 +        if (align != m_align) {
 +            lString8 css(m_baseStyle);
 +            if (align != "book") {
-+                // User rules override publisher paragraph styles without targeting headings.
-+                css += "\nbody, p { text-align: ";
++                // Cover prose in generic blocks as well as in p elements.
++                css += "\nbody, p, div, section, article, blockquote, li, dt, dd { text-align: ";
 +                css += align.c_str();
 +                css += " !important; text-align-last: auto !important; }\n";
 +            }

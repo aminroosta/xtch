@@ -11,7 +11,7 @@ Run `renderer/rebuild.sh` with Podman (or `CONTAINER_ENGINE=docker renderer/rebu
 
 ```text
 a3a0e214abc7987d56a0954bddda50421d12c17f12b7a490a4d83753c25476a8  crengine.js
-598a215d6ba639abc3b79e75c203f657ed784fa9f57dc9282caa27082a51ce27  crengine.wasm
+63d40874836748c165e365e34e3f6c8a3449685435dee585dd8dd7f55714a503  crengine.wasm
 ```
 
 ## Fonts
