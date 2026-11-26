@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="theme-color" content="#f5f3ee">
+  <meta name="description" content="Preview EPUBs and convert them to XTCH for the Xteink X4 Classic. Your books stay on your device.">
+  <title>Paperform — EPUB to XTCH</title>
+  <link rel="icon" href="./icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./style.css">
+  <script src="./app.js" type="module"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="top-inner">
+      <a class="brand" href="./"><img src="./icons/icon.svg" width="32" height="32" alt="">Paperform</a>
+      <button class="quiet install" id="install" type="button" hidden>Install app</button>
+      <span class="private">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 20 20" aria-hidden="true"><rect x="4.5" y="8" width="11" height="9" rx="2"/><path d="M7 8V5a3 3 0 0 1 6 0v3"/></svg>
+        Files stay on this device
+      </span>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="intro">
+      <h1>EPUB to XTCH</h1>
+      <p>Set your type, preview the pages, and export for your Xteink X4 Classic.</p>
+    </div>
+    <div class="workspace">
+      <section class="card book-card">
+        <h2>Book</h2>
+        <input id="file" type="file" accept=".epub,application/epub+zip" hidden>
+        <button class="drop" id="pick" type="button">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4m-4 4 4-4 4 4M4 15v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4"/></svg>
+          <span id="pick-label">Choose an EPUB</span>
+          <small id="pick-hint">or drop a file here</small>
+        </button>
+        <div class="book-detail" id="book-detail" hidden>
+          <strong id="book-title"></strong>
+          <span id="book-author"></span>
+        </div>
+      </section>
+      <section class="card preview" aria-labelledby="preview-heading">
+        <div class="preview-head">
+          <h2 id="preview-heading">Page preview</h2>
+          <select id="chapters" aria-label="Jump to chapter" disabled><option value="">Jump to chapter</option></select>
+        </div>
+        <div class="stage">
+          <div class="device">
+            <div class="screen">
+              <canvas id="page" width="480" height="800" role="img" aria-label="Rendered book page" hidden></canvas>
+              <div class="placeholder" id="placeholder">
+                <svg width="42" height="42" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M11 7h18l8 8v26H11z"/><path d="M29 7v9h8M17 23h14M17 28h14M17 33h9"/></svg>
+                <p id="placeholder-text">Choose an EPUB to see its pages.</p>
+              </div>
+            </div>
+            <div class="device-mark" aria-hidden="true"></div>
+          </div>
+        </div>
+        <div class="nav">
+          <button id="prev" type="button" class="arrow" aria-label="Previous page" disabled>←</button>
+          <form id="go">
+            <label class="sr-only" for="number">Page number</label>
+            <input type="number" id="number" min="1" value="1" step="1" inputmode="numeric" disabled>
+            <span id="page-count">/ —</span>
+          </form>
+          <button id="next" type="button" class="arrow" aria-label="Next page" disabled>→</button>
+        </div>
+        <p class="status" id="status" role="status"></p>
+        <p class="error" id="error" role="alert" hidden></p>
+      </section>
+      <section class="card layout-card">
+        <div class="card-head"><h2>Layout</h2><button id="reset" type="button" class="quiet">Reset</button></div>
+        <fieldset id="layout" aria-label="Layout controls">
+          <label class="face" for="font">Typeface</label>
+          <select id="font">
+            <option value="serif">STIX Two Text · Serif</option>
+            <option value="sans">Liberation Sans · Sans serif</option>
+            <option value="mono">Liberation Mono · Monospace</option>
+          </select>
+          <label class="slider-label" for="size">Font size <output id="size-val" for="size"></output></label>
+          <input id="size" type="range" min="20" max="46" step="2" value="30">
+          <label class="slider-label" for="line">Line spacing <output id="line-val" for="line"></output></label>
+          <input id="line" type="range" min="100" max="160" step="5" value="115">
+          <label class="slider-label" for="margin">Page margins <output id="margin-val" for="margin"></output></label>
+          <input id="margin" type="range" min="8" max="36" step="2" value="18">
+          <div class="toggles">
+            <label><input id="hyphen" type="checkbox" checked> Hyphenate words</label>
+            <label><input id="dither" type="checkbox"> Dither grayscale</label>
+          </div>
+        </fieldset>
+      </section>
+      <section class="card export-card" aria-label="Export">
+        <button class="primary" id="compile" disabled type="button">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v12m-4-4 4 4 4-4M4 17v3h16v-3"/></svg>
+          <span>Compile XTCH</span>
+        </button>
+        <p id="size-estimate">480 × 800 · 4-level grayscale</p>
+        <progress id="progress" aria-label="Pages compiled" hidden></progress>
+        <button class="quiet" id="cancel" type="button" hidden>Cancel</button>
+        <a class="primary" id="download" hidden>Download XTCH</a>
+      </section>
+    </div>
+    <footer><span>XTCH uses fixed pages. Set your font and size before exporting.</span><a href="./licenses">Credits &amp; licenses</a></footer>
+  </main>
+</body>
+</html>

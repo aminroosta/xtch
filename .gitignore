@@ -1,0 +1,14 @@
+# Build and local tooling
+dist/
+node_modules/
+.wrangler/
+.DS_Store
+
+# Local credentials
+.env*
+.dev.vars*
+
+# Books and conversion output
+*.epub
+*.xtc
+*.xtch
